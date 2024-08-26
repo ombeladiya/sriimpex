@@ -1,9 +1,20 @@
 "use client";
-import { useRouter } from 'next/navigation'
 import React from 'react'
-
+import { useEffect, useState } from "react";
 function ProductDetails({ params }) {
     const { slug } = params;
+    const [product, setProduct] = useState([]);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            const response = await fetch('/data/products.json');
+            let data = await response.json();
+            data = await data.find(product => product.id == slug)
+            setProduct(data);
+        };
+
+        fetchProducts();
+    }, [slug]);
     const handleShare = async () => {
         if (navigator.share) {
             try {
@@ -27,21 +38,21 @@ function ProductDetails({ params }) {
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-16 mx-auto max-md:px-2 ">
                         <div class="img">
                             <div class="img-box h-full max-lg:mx-auto ">
-                                <img src="https://assets.epicurious.com/photos/63111762d3f76b91588119b6/1:1/w_2560%2Cc_limit/Garam_Masala_RECIPE_082522_39348.jpg" alt="Yellow Tropical Printed Shirt image"
-                                    class="max-lg:mx-auto lg:ml-auto h-full" />
+                                <img src={product.imgUrl}
+                                    class="max-lg:mx-auto lg:ml-auto h-full rounded-lg" />
                             </div>
                         </div>
                         <div
                             class="data w-full lg:pr-8 pr-0 xl:justify-start justify-center flex items-center max-lg:pb-10 xl:my-2 lg:my-5 my-0">
                             <div class="data w-full max-w-xl">
-                                <p class="text-sm sm:text-lg font-medium leading-8 text-gray-600 mb-1 sm:mb-4">Clothing&nbsp; /&nbsp; Menswear
+                                <p class="text-sm sm:text-lg font-medium leading-8 text-gray-600 mb-1 sm:mb-4">
                                 </p>
-                                <h2 class="font-manrope font-bold text-2xl leading-10 text-gray-900 mb-2 capitalize">{slug}</h2>
+                                <h2 class="font-manrope font-bold text-2xl leading-10 text-gray-900 mb-2 capitalize">{product.name}</h2>
 
                                 <p class="text-gray-500 text-base font-normal mb-5">
-                                    A versatile Indian spice, perfect for adding heat and flavor to your dishes. Made from dried red chili peppers, it's ideal for curries, marinades, and snacks. Available in various heat levels to suit your taste.
+                                    {product.description}
                                 </p>
-                                <ul class="grid gap-y-4 mb-8">
+                                {/* <ul class="grid gap-y-4 mb-8">
                                     <li class="flex items-center gap-3">
                                         <svg width="26" height="26" viewBox="0 0 26 26" fill="none"
                                             xmlns="http://www.w3.org/2000/svg">
@@ -98,7 +109,7 @@ function ProductDetails({ params }) {
                                         <button
                                             class="bg-white text-center py-1 px-4 w-full font-semibold text-sm leading-8 text-gray-900 border border-gray-200 flex items-center rounded-full justify-center transition-all duration-300 hover:bg-gray-50 hover:shadow-sm hover:shadow-gray-100 hover:border-gray-300 visited:border-gray-300 visited:bg-gray-50">XXL</button>
                                     </div>
-                                </div>
+                                </div> */}
                                 <div class="flex items-center gap-3">
                                     <button
                                         onClick={handleShare}
